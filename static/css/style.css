@@ -1,0 +1,90 @@
+/* Login Page Styles */
+.login-page {
+    min-height: calc(100vh - 60px);
+    background: url("/static/images/log.jpg") no-repeat center center fixed;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: absolute;
+    top: 50px; /* height of your navbar */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+
+.login-page .card {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
+}
+
+.login-page h4 {
+    color: #333; /* better visibility */
+}
+
+
+.login-page button, 
+.login-page input[type="submit"] {
+    padding: 6px 16px;   
+    font-size: 14px;     /* smaller text */
+    border-radius: 4px;
+    width: auto;         /* don’t stretch full width */
+    min-width: 80px;     /* optional minimum size */
+}
+
+
+
+
+.navbar-brand {
+    margin: 0 auto;   
+    font-size: 2.5rem;
+    text-align: center;
+    padding-left: 250px; 
+}
+
+.navbar {
+    background-color: #175ba4; 
+    position: relative;
+    z-index: 1000;
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link,
+.navbar .btn {
+    color: #fff !important;
+}
+
+
+.card {
+    border-radius: 12px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+h2 {
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+body.login,
+body.dashboard,
+body.app-index {
+    background: url("/static/images/log.jpg") no-repeat center center fixed;
+    background-size: cover;
+}
+
+

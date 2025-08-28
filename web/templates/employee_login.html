@@ -1,0 +1,7 @@
+<form method="post" class="card card-body">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <div class="mb-2">{{ form.username.label_tag }} {{ form.username }}</div>
+  <div class="mb-2">{{ form.password.label_tag }} {{ form.password }}</div>
+  <button class="btn btn-primary w-100">Login</button>
+</form>

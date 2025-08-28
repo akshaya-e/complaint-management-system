@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 style="color:black;">{% if request.resolver_match.url_name == 'assigned_complaints' %}My Assigned Complaints{% else %}Unassigned Complaints{% endif %}</h3><br>
+<table class="table table-sm">
+  <thead><tr><th>#</th><th>Customer</th><th>Product</th><th>Level</th><th>Status</th><th></th></tr></thead>
+  <tbody>
+    {% for c in items %}
+    <tr>
+      <td>#{{ c.pk }}</td><td>{{ c.customer }}</td><td>{{ c.product }}</td><td>{{ c.get_level_display }}</td>
+      <td>{{ c.get_status_display }}</td>
+      <td>
+        {% if request.resolver_match.url_name == 'unassigned_complaints' %}
+          <a class="btn btn-sm btn-primary" href="{% url 'assign_to_me' c.pk %}">Assign to me</a>
+        {% else %}
+          <a class="btn btn-sm btn-outline-secondary" href="{% url 'add_remark' c.pk %}">Add Remark</a>
+          <form method="post" action="{% url 'update_status' c.pk %}" class="d-inline">{% csrf_token %}
+            <select name="status" class="form-select form-select-sm d-inline w-auto">
+              <option value="PENDING">Pending</option>
+              <option value="CLOSED">Closed</option>
+              <option value="NOT_CLOSED">Not Closed</option>
+            </select>
+            <button class="btn btn-sm btn-success">Update</button>
+          </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% empty %}<tr><td colspan="6">No items.</td></tr>{% endfor %}
+  </tbody>
+</table>
+{% endblock %}

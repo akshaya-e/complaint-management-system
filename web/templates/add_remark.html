@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Add Remark / Update Status for: {{ complaint.title }}</h2>
+<form method="post">
+    {% csrf_token %}
+    <textarea name="remark" placeholder="Enter remark" required></textarea><br>
+    <label>Status:</label>
+    <select name="status">
+        {% for s, label in status_choices %}
+        <option value="{{ s }}" {% if complaint.status == s %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select><br>
+    <button type="submit">Save</button>
+</form>
+{% endblock %}

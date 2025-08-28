@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h5>{{ edit|yesno:"Edit Employee,Add Employee" }}</h5>
+<form method="post" class="card card-body">{% csrf_token %}
+  {% if not edit %}
+  <div class="row">
+    <div class="col-md-4 mb-2"><label>Username</label><input name="username" class="form-control" required></div>
+    <div class="col-md-4 mb-2"><label>First name</label><input name="first_name" class="form-control"></div>
+    <div class="col-md-4 mb-2"><label>Last name</label><input name="last_name" class="form-control"></div>
+    <div class="col-md-4 mb-2"><label>Password</label><input name="password" class="form-control" type="password"></div>
+  </div>
+  {% endif %}
+  {{ form.as_p }}
+  <button class="btn btn-primary">Save</button>
+</form>
+{% endblock %}

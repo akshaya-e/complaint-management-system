@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h5>Complaint #{{ complaint.pk }}</h5>
+<ul class="list-group mb-3">
+  <li class="list-group-item"><strong>Customer:</strong> {{ complaint.customer }}</li>
+  <li class="list-group-item"><strong>Product:</strong> {{ complaint.product }}</li>
+  <li class="list-group-item"><strong>Level:</strong> {{ complaint.get_level_display }}</li>
+  <li class="list-group-item"><strong>Status:</strong> {{ complaint.get_status_display }}</li>
+  <li class="list-group-item"><strong>Assigned To:</strong> {{ complaint.assigned_to|default:"-" }}</li>
+  <li class="list-group-item"><strong>Description:</strong><br>{{ complaint.description }}</li>
+  <li class="list-group-item"><strong>Location:</strong> 
+    Lat {{ complaint.latitude }}, Lng {{ complaint.longitude }}
+  </li>
+  <li class="list-group-item"><strong>Created:</strong> {{ complaint.created_at|date:"Y-m-d H:i" }}</li>
+</ul>
+<a href="{% url 'complaint_update' complaint.pk %}" class="btn btn-primary btn-sm">Edit</a>
+<a href="{% url 'complaint_list' %}" class="btn btn-secondary btn-sm">Back</a>
+{% endblock %}

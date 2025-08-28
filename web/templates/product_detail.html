@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h4>Product Details</h4>
+<ul class="list-group">
+  <li class="list-group-item"><strong>Name:</strong> {{ product.name }}</li>
+  <li class="list-group-item"><strong>Price:</strong> {{ product.price }}</li>
+  <li class="list-group-item"><strong>Tax:</strong> {{ product.tax }} %</li>
+</ul>
+
+<a href="{% url 'product_list' %}" class="btn btn-secondary mt-3">Back to Products</a>
+{% endblock %}

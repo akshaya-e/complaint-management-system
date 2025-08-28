@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<center><h2 style="color:black;">Admin Panel</h2></center><br>
+<div class="row g-3">
+  <div class="col-md-3" style="background-color: pink; padding: 10px; margin-bottom: 10px;"><a class="btn btn-outline-primary w-100" href="{% url 'employee_list' %}">Employee Master</a></div>
+  <div class="col-md-3" style="background-color: aqua; padding: 10px; margin-bottom: 10px;"><a class="btn btn-outline-primary w-100" href="{% url 'customer_list' %}">Customer Master</a></div>
+  <div class="col-md-3" style="background-color: yellow; padding: 10px; margin-bottom: 10px;"><a class="btn btn-outline-primary w-100" href="{% url 'product_list' %}">Product Master</a></div>
+  <div class="col-md-3" style="background-color: pink; padding: 10px; margin-bottom: 10px;"><a class="btn btn-outline-primary w-100" href="{% url 'complaint_list' %}">Complaints</a></div>
+</div>
+{% endblock %}

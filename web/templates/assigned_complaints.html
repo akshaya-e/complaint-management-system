@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="text-center mb-3">
+  <h2 style="color:black;">Assigned Complaints</h2>
+</div><br>
+<table>
+<tr><th>Title</th><th>Status</th><th>Action</th></tr>
+{% for c in complaints %}
+<tr>
+    <td>{{ c.title }}</td>
+    <td>{{ c.status }}</td>
+    <td><a href="{% url 'add_remark' c.id %}">Add Remark / Update Status</a></td>
+</tr>
+{% empty %}
+<tr><td colspan="3">No assigned complaints.</td></tr>
+{% endfor %}
+</table>
+{% endblock %}

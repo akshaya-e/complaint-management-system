@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="position-relative mb-2">
+  <h2 class="text-center" style="color:black;">Complaints</h2>
+  <a href="{% url 'complaint_create' %}" class="btn btn-sm btn-primary position-absolute end-0 top-50 translate-middle-y">
+    + Register Complaint
+  </a>
+</div><br>
+<table class="table table-sm">
+  <thead><tr><th>#</th><th>Customer</th><th>Product</th><th>Level</th><th>Status</th><th>Assigned To</th><th>Created</th></tr></thead>
+  <tb{% for c in items %}
+  <tr>
+    <td>#{{ c.pk }}</td>
+    <td>{{ c.customer }}</td>
+    <td>{{ c.product }}</td>
+    <td>{{ c.get_level_display }}</td>
+    <td>{{ c.get_status_display }}</td>
+    <td>{{ c.assigned_to|default:"-" }}</td>
+    <td>{{ c.created_at|date:"Y-m-d H:i" }}</td>
+    <td>
+      <a href="{% url 'complaint_detail' c.pk %}" class="btn btn-sm btn-info">View</a>
+      <a href="{% url 'complaint_update' c.pk %}" class="btn btn-sm btn-warning">Edit</a>
+    </td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="8">No complaints.</td></tr>
+  {% endfor %}ody>
+    
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">👨‍💼 Employee Dashboard</h2>
+
+    <!-- Chart Container -->
+    <div class="card shadow-sm p-4">
+        <h5 class="text-center">Complaint Distribution</h5>
+        <canvas id="complaintsChart" height="150"></canvas>
+    </div><br>
+
+<div><center>
+
+    <p>Assigned Complaints: {{ assigned_count }}</p>
+    <p>Unassigned Complaints: {{ unassigned_count }}</p>
+</center>
+</div>
+<center><div><a href="{% url 'assigned_complaints' %}">View Assigned Complaints</a> |
+<a href="{% url 'unassigned_complaints' %}">View Unassigned Complaints</a></center>
+</div
+
+<!-- Chart.js Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('complaintsChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Assigned Complaints', 'Unassigned Complaints'],
+            datasets: [{
+                label: 'Number of Complaints',
+                data: [{{ assigned_count }}, {{ unassigned_count }}],
+                backgroundColor: ['#0d6efd', '#dc3545'], // blue and red
+                borderColor: ['#084298', '#842029'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: 'Assigned vs Unassigned Complaints'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    precision: 0
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

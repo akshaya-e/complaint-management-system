@@ -1,0 +1,38 @@
+ {% extends "base.html" %}
+{% block content %}
+<div class="position-relative mb-2">
+  <h2 class="text-center" style="color:black;">Employee Master</h2>
+  <a href="{% url 'employee_create' %}" class="btn btn-sm btn-primary position-absolute end-0 top-50 translate-middle-y">+ Add</a>
+</div><br>
+<table class="table table-sm table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Designation</th>
+      <th>Phone</th>
+      <th>Salary</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for e in employees %}
+    <tr>
+      <td>{{ e.user.get_full_name|default:e.user.username }}</td>
+      <td>{{ e.designation }}</td>
+      <td>{{ e.phone }}</td>
+      <td>{{ e.salary }}</td>
+      <td>
+        <a class="btn btn-sm btn-info" href="{% url 'employee_detail' e.pk %}">View</a></td>
+         <td><a class="btn btn-sm btn-outline-secondary" href="{% url 'employee_edit' e.pk %}">Edit</a></td>
+      
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">No employees.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
+
+
+
+
