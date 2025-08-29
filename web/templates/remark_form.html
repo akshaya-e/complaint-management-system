@@ -1,8 +1,72 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h5>Add Remark for #{{ complaint.pk }}</h5>
-<form method="post" class="card card-body">{% csrf_token %}
-  {{ form.as_p }}
-  <button class="btn btn-primary">Save</button>
-</form>
+<div class="container mt-3">
+    <h3>Add Remark / Update for Complaint {{ complaint.pk }}</h3>
+
+    <!-- Add Remark -->
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5>Add Remark</h5>
+            <form method="post">
+                {% csrf_token %}
+                {{ remark_form.as_p }}
+                <button type="submit" name="remark_submit" class="btn btn-primary">Save Remark</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Update (with Status) -->
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5>Add Work Report / Update</h5>
+            <form method="post">
+                {% csrf_token %}
+                {{ update_form.as_p }}
+                <button type="submit" name="update_submit" class="btn btn-success">Save Update</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Display Previous Remarks -->
+    <h5>Previous Remarks:</h5>
+    <ul class="list-group mb-3">
+        {% for r in remarks %}
+        <li class="list-group-item">
+            <strong>
+                {% if r.user %}
+                    {{ r.user.get_full_name|default:r.user.username }}
+                {% else %}
+                    Unknown
+                {% endif %}
+            </strong>
+            <em>{{ r.created_at|date:"Y-m-d H:i" }}</em>
+            <p>{{ r.text }}</p>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No remarks yet.</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Display Previous Updates -->
+    <h5>Previous Updates:</h5>
+    <ul class="list-group">
+        {% for u in updates %}
+        <li class="list-group-item">
+            <strong>
+                {% if u.updated_by %}
+                    {{ u.updated_by.get_full_name|default:u.updated_by.username }}
+                {% else %}
+                    Unknown
+                {% endif %}
+            </strong>
+            <em>{{ u.created_at|date:"Y-m-d H:i" }}</em>
+            <p>Status: {{ u.status_snapshot }}</p>
+            <p>{{ u.remark }}</p>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No updates yet.</li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}

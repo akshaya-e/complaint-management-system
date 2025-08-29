@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
-<h5>{% if request.resolver_match.url_name == 'assigned_complaints' %}My Assigned Complaints{% else %}Unassigned Complaints{% endif %}</h5>
+<h3 style="color:black; text-align:center;">
+    {% if request.resolver_match.url_name == 'assigned_complaints' %}
+        My Assigned Complaints
+    {% else %}
+        Unassigned Complaints
+    {% endif %}
+</h3>
+<br>
 <table class="table table-sm">
   <thead><tr><th>#</th><th>Customer</th><th>Product</th><th>Level</th><th>Status</th><th></th></tr></thead>
   <tbody>

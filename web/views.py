@@ -40,6 +40,8 @@ def home(request):
         return redirect("employee_dashboard")
     return render(request, "no_role.html")
 
+#def hom(request):
+    #return render(request, 'home.html')
 
 #admin side CRUD and complaints
 
@@ -272,7 +274,7 @@ def assign_complaint(request, complaint_id):
     return redirect('unassigned_complaints')
 
 
-@login_required
+'''@login_required
 def add_remark(request, pk):
     complaint = get_object_or_404(Complaint, pk=pk)
     if request.method == "POST":
@@ -285,7 +287,52 @@ def add_remark(request, pk):
             return redirect("assigned_complaints")
     else:
         form = RemarkForm()
-    return render(request, "remark_form.html", {"form": form, "complaint": complaint})
+    return render(request, "remark_form.html", {"form": form, "complaint": complaint})'''
+    
+@login_required
+def add_remark(request, pk):
+    complaint = get_object_or_404(Complaint, pk=pk)
+
+    # Get all previous remarks and updates
+    remarks = complaint.remarks.all().order_by('-created_at')
+    updates = complaint.updates.all().order_by('-created_at')
+
+    if request.method == "POST":
+        if 'remark_submit' in request.POST:
+            remark_form = RemarkForm(request.POST)
+            update_form = ComplaintUpdateForm()
+            if remark_form.is_valid():
+                remark = remark_form.save(commit=False)
+                remark.complaint = complaint
+                remark.user = request.user
+                remark.save()
+                return redirect('add_remark', pk=complaint.pk)
+
+        elif 'update_submit' in request.POST:
+            update_form = ComplaintUpdateForm(request.POST)
+            remark_form = RemarkForm()
+            if update_form.is_valid():
+                update = update_form.save(commit=False)
+                update.complaint = complaint
+                update.updated_by = request.user
+                update.save()
+                # Optionally update complaint status
+                complaint.status = update.status_snapshot
+                complaint.save()
+                return redirect('add_remark', pk=complaint.pk)
+
+    else:
+        remark_form = RemarkForm()
+        update_form = ComplaintUpdateForm()
+
+    context = {
+        'complaint': complaint,
+        'remarks': remarks,
+        'updates': updates,
+        'remark_form': remark_form,
+        'update_form': update_form
+    }
+    return render(request, "remark_form.html", context)
 
 @login_required
 def update_status(request, pk):
@@ -336,16 +383,26 @@ def employee_login(request):
 
 
 '''def hom(request):
-    return render(request, 'home.html')
+    return render(request, 'home.html')'''
 
 def login_view(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        role = request.POST.get("role")
+
         user = authenticate(request, username=username, password=password)
+
         if user is not None:
             login(request, user)
-            return redirect('home')
+
+            if role == "admin" and user.is_superuser:
+                return redirect("admin_dashboard")
+            elif role == "employee" and Employee.objects.filter(user=user).exists():
+                return redirect("employee_dashboard")
+            else:
+                return render(request, "login.html", {"error": "Invalid role selection"})
         else:
-            messages.error(request, 'Invalid username or password.')
-    return render(request, 'login.html')'''
+            return render(request, "login.html", {"error": "Invalid username or password"})
+
+    return render(request, "login.html")
