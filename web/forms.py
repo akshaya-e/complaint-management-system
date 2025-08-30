@@ -20,7 +20,6 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ["name","price","tax"]
-
 class ComplaintForm(forms.ModelForm):
     class Meta:
         model = Complaint
@@ -34,6 +33,14 @@ class ComplaintForm(forms.ModelForm):
         self.fields["assigned_to"].queryset = Employee.objects.select_related("user").all()
         self.fields["assigned_to"].label_from_instance = lambda obj: f"{obj.user.username} ({obj.designation})"
 
+
+
+
+
+
+            
+            
+            
 class ComplaintUpdateForm(forms.ModelForm):
     class Meta:
         model = ComplaintUpdate

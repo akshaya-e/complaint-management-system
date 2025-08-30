@@ -8,7 +8,7 @@
 </div><br>
 <table class="table table-sm">
   <thead><tr><th>#</th><th>Customer</th><th>Product</th><th>Level</th><th>Status</th><th>Assigned To</th><th>Created</th></tr></thead>
-  <tb{% for c in items %}
+  <tbody>{% for c in items %}
   <tr>
     <td>#{{ c.pk }}</td>
     <td>{{ c.customer }}</td>
@@ -20,11 +20,12 @@
     <td>
       <a href="{% url 'complaint_detail' c.pk %}" class="btn btn-sm btn-info">View</a>
       <a href="{% url 'complaint_update' c.pk %}" class="btn btn-sm btn-warning">Edit</a>
+     
     </td>
   </tr>
   {% empty %}
   <tr><td colspan="8">No complaints.</td></tr>
-  {% endfor %}ody>
+  {% endfor %}
     
   </tbody>
 </table>

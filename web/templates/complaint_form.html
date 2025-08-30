@@ -1,40 +1,72 @@
 {% extends "base.html" %}
+
 {% block content %}
 <h2 class="text-center" style="color:black;">Register Complaint</h2>
-<form method="post" class="card card-body">{% csrf_token %}
-  {{ form.non_field_errors }}
-  <div class="row">
-    <div class="col-md-4">{{ form.customer.label_tag }} {{ form.customer }}</div>
-    <div class="col-md-4">{{ form.product.label_tag }} {{ form.product }}</div>
-    <div class="col-md-4">{{ form.level.label_tag }} {{ form.level }}</div>
-  </div>
 
-  <div class="mb-2">{{ form.description.label_tag }} {{ form.description }}</div>
-  <div class="row">
-    <div class="col-md-6">{{ form.assigned_to.label_tag }} {{ form.assigned_to }}</div>
-    <div class="col-md-3">{{ form.status.label_tag }} {{ form.status }}</div>
-  </div>
-  <hr/>
-  <p class="small text-muted">Click on map to set location.</p>
-  <div id="map" class="mapbox mb-2"></div>
-  <div class="row">
-    <div class="col-md-3">{{ form.latitude.label_tag }} {{ form.latitude }}</div>
-    <div class="col-md-3">{{ form.longitude.label_tag }} {{ form.longitude }}</div>
-  </div>
-  <button class="btn btn-primary mt-2">Save</button>
+<form method="post" class="card card-body">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <!-- Customer, Product, Level -->
+    <div class="row">
+        <div class="col-md-4">{{ form.customer.label_tag }} {{ form.customer }}</div>
+        <div class="col-md-4">{{ form.product.label_tag }} {{ form.product }}</div>
+        <div class="col-md-4">{{ form.level.label_tag }} {{ form.level }}</div>
+    </div>
+
+    <!-- Description -->
+    <div class="mb-2">{{ form.description.label_tag }} {{ form.description }}</div>
+
+    
+    <div class="row">
+        <div class="col-md-6">{{ form.assigned_to.label_tag }} {{ form.assigned_to }}</div>
+        <div class="col-md-3">{{ form.status.label_tag }} {{ form.status }}</div>
+    </div>
+
+    <hr/>
+    <p class="small text-muted">Click on map to set location.</p>
+
+    <!-- Map -->
+    <div id="map" class="mapbox mb-2" style="height: 400px;"></div>
+
+    <!-- Latitude and Longitude -->
+    <div class="row">
+        <div class="col-md-3">{{ form.latitude.label_tag }} {{ form.latitude }}</div>
+        <div class="col-md-3">{{ form.longitude.label_tag }} {{ form.longitude }}</div>
+    </div>
+
+    <!-- Save Button -->
+    {% if form.instance.assigned_to and form.instance.reassigned %}
+        <button class="btn btn-primary mt-2" disabled>Save</button>
+        <p class="text-danger small mt-1">Reassignment is not allowed for this complaint.</p>
+    {% else %}
+        <button class="btn btn-primary mt-2">Save</button>
+    {% endif %}
+
 </form>
 {% endblock %}
+
 {% block scripts %}
 <script>
-  const map = L.map('map').setView([10.0, 76.0], 6);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-  let marker;
-  function setMarker(lat,lng){
-    if(marker) map.removeLayer(marker);
-    marker = L.marker([lat,lng]).addTo(map);
-    document.getElementById("id_latitude").value = lat.toFixed(6);
-    document.getElementById("id_longitude").value = lng.toFixed(6);
-  }
-  map.on('click', (e)=> setMarker(e.latlng.lat, e.latlng.lng));
+    const map = L.map('map').setView([10.0, 76.0], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    let marker;
+
+    function setMarker(lat,lng){
+        if(marker) map.removeLayer(marker);
+        marker = L.marker([lat,lng]).addTo(map);
+        document.getElementById("id_latitude").value = lat.toFixed(6);
+        document.getElementById("id_longitude").value = lng.toFixed(6);
+    }
+
+    const latInput = document.getElementById("id_latitude").value;
+    const lngInput = document.getElementById("id_longitude").value;
+    if(latInput && lngInput){
+        setMarker(parseFloat(latInput), parseFloat(lngInput));
+        map.setView([parseFloat(latInput), parseFloat(lngInput)], 12);
+    }
+
+    map.on('click', (e)=> setMarker(e.latlng.lat, e.latlng.lng));
 </script>
 {% endblock %}

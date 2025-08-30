@@ -48,7 +48,10 @@ urlpatterns = [
     path("status/<int:pk>/", views.update_status, name="update_status"),
     
     #path('', views.hom, name='hom'),
-    #path('login/', views.login_view, name='login'),
+    path('login/', views.login_view, name='login'),
+    path("admin/dashboard/", views.admin_dashboard, name="admin_dashboard"),
+    path('complaints/<int:pk>/assign_me/', views.assign_to_me, name='assign_to_me'),
+    #path('complaint/delete/<int:pk>/', views.complaint_delete, name='complaint_delete'),
     
     #path('unassigned/', views.unassigned_complaints, name='unassigned_complaints'),
     #path('assign/<int:pk>/', views.assign_to_me, name='assign_to_me'),

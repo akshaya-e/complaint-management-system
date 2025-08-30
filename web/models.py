@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
+from django.core.exceptions import ValidationError
+
 #from django.utils import timezone
 
 
@@ -49,13 +51,22 @@ class Complaint(models.Model):
     description = models.TextField()
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
-    assigned_to = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True)
+    assigned_to = models.OneToOneField(Employee, on_delete=models.SET_NULL, null=True, blank=True)
     status = models.CharField(max_length=12, choices=STATUS_CHOICES, default="PENDING")
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="created_complaints")
     created_at = models.DateTimeField(auto_now_add=True)
+    #reassigned = models.BooleanField(default=False)
+    
+    '''def save(self, *args, **kwargs):
+        if self.pk:  # Check if this complaint already exists
+            orig = Complaint.objects.get(pk=self.pk)
+            if orig.assigned_to and self.assigned_to != orig.assigned_to:
+                raise ValidationError("This complaint is already assigned and cannot be reassigned.")
+        super().save(*args, **kwargs)'''
 
     def __str__(self):
         return f"Complaint #{self.pk} - {self.customer} - {self.product}"
+
 
 
     

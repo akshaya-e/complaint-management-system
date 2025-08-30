@@ -34,18 +34,15 @@ def user_logout(request):
 @login_required
 def home(request):
     if is_admin(request.user):
-        # simple admin home: quick links
         return render(request, "admin_home.html")
     elif is_employee(request.user):
         return redirect("employee_dashboard")
     return render(request, "no_role.html")
 
-#def hom(request):
-    #return render(request, 'home.html')
+@login_required
+def admin_dashboard(request):
+    return render(request, "admin_home.html")
 
-#admin side CRUD and complaints
-
-#admin:Employees
 
 @user_passes_test(is_admin)
 def employee_list(request):
@@ -94,10 +91,7 @@ def employee_detail(request, pk):
     return render(request, 'employee_detail.html', {'employee': employee})
 
 # ---- Admin: Customers ----
-'''@user_passes_test(is_admin)
-def customer_list(request):
-    items = Customer.objects.all()
-    return render(request, "customer_list.html", {"items": items})'''
+
 def customer_list(request):
     customers = Customer.objects.all()
     return render(request, "customer_list.html", {"customers": customers})
@@ -191,14 +185,12 @@ def complaint_update(request, pk):
         form = ComplaintForm(instance=complaint)
     return render(request, "complaint_form.html", {"form": form})
 
+
 @login_required
 @user_passes_test(is_employee)
 def assigned_complaints(request):
-
-    
     print("User:", request.user)
     print("Employee attribute exists?", hasattr(request.user, "employee"))
-
     try:
         emp = request.user.employee
         print("Employee instance:", emp)
@@ -245,19 +237,27 @@ def assigned_complaints(request):
 
 
     
+    
 @login_required
 def assign_to_me(request, pk):
+    complaint = get_object_or_404(Complaint, pk=pk)
     
-    complaint = get_object_or_404(Complaint, pk=pk, assigned_to__isnull=True)
-    try:
-        employee = Employee.objects.get(user=request.user)
-    except Employee.DoesNotExist:
-        return HttpResponse("You are not registered as an employee.")
-    complaint.assigned_to = employee
-    complaint.status = 'PENDING' 
+    # Check if complaint is already assigned
+    if complaint.assigned_to:
+        messages.error(request, "This complaint is already assigned.")
+        return redirect('unassigned_complaints')
+
+    # Check if employee already has a complaint
+    if Complaint.objects.filter(assigned_to=request.user.employee).exists():
+        messages.error(request, "You already have an assigned complaint.")
+        return redirect('unassigned_complaints')
+
+    # Assign complaint
+    complaint.assigned_to = request.user.employee
     complaint.save()
-    return redirect("assigned_complaints")
-    
+    messages.success(request, "Complaint successfully assigned to you.")
+    return redirect('unassigned_complaints')
+
 
 
 
@@ -272,22 +272,10 @@ def assign_complaint(request, complaint_id):
     else:
         messages.error(request, "Complaint is already assigned.")
     return redirect('unassigned_complaints')
+    
+    
 
 
-'''@login_required
-def add_remark(request, pk):
-    complaint = get_object_or_404(Complaint, pk=pk)
-    if request.method == "POST":
-        form = RemarkForm(request.POST)
-        if form.is_valid():
-            remark = form.save(commit=False)
-            remark.complaint = complaint
-            remark.user = request.user
-            remark.save()
-            return redirect("assigned_complaints")
-    else:
-        form = RemarkForm()
-    return render(request, "remark_form.html", {"form": form, "complaint": complaint})'''
     
 @login_required
 def add_remark(request, pk):
@@ -333,6 +321,7 @@ def add_remark(request, pk):
         'update_form': update_form
     }
     return render(request, "remark_form.html", context)
+
 
 @login_required
 def update_status(request, pk):
@@ -382,8 +371,7 @@ def employee_login(request):
     return render(request, 'employee_login.html')
 
 
-'''def hom(request):
-    return render(request, 'home.html')'''
+
 
 def login_view(request):
     if request.method == "POST":
@@ -406,3 +394,13 @@ def login_view(request):
             return render(request, "login.html", {"error": "Invalid username or password"})
 
     return render(request, "login.html")
+
+
+
+'''@login_required
+@user_passes_test(lambda u: u.is_superuser)  # only admin can delete
+def complaint_delete(request, pk):
+    complaint = get_object_or_404(Complaint, pk=pk)
+    complaint.delete()
+    messages.success(request, f"Complaint #{pk} deleted successfully.")
+    return redirect("complaint_list")'''
