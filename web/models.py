@@ -52,7 +52,7 @@ class Complaint(models.Model):
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     assigned_to = models.OneToOneField(Employee, on_delete=models.SET_NULL, null=True, blank=True)
-    status = models.CharField(max_length=12, choices=STATUS_CHOICES, default="PENDING")
+    status = models.CharField(max_length=12, choices=STATUS_CHOICES, default="STATUS_PENDING")
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="created_complaints")
     created_at = models.DateTimeField(auto_now_add=True)
     #reassigned = models.BooleanField(default=False)

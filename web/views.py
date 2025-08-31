@@ -323,7 +323,7 @@ def add_remark(request, pk):
     return render(request, "remark_form.html", context)
 
 
-@login_required
+'''@login_required
 def update_status(request, pk):
     complaint = get_object_or_404(Complaint, pk=pk)
     if request.method == "POST":
@@ -331,12 +331,12 @@ def update_status(request, pk):
         if new_status in dict(Complaint.STATUS_CHOICES).keys():
             complaint.status = new_status
             complaint.save()
-    return redirect("assigned_complaints")
+    return redirect("assigned_complaints")'''
 
 
 
 
-@login_required
+'''@login_required
 @user_passes_test(is_employee)
 def update_status(request, pk):
     c = get_object_or_404(Complaint, pk=pk, assigned_to=request.user.employee)
@@ -350,7 +350,34 @@ def update_status(request, pk):
                 status_snapshot=new_status
             )
             messages.success(request, "Status updated.")
+    return redirect("assigned_complaints")'''
+    
+@login_required
+@user_passes_test(is_employee)
+def update_status(request, pk):
+    complaint = get_object_or_404(Complaint, pk=pk, assigned_to=request.user.employee)
+
+    if request.method == "POST":
+        new_status = request.POST.get("status")
+        remark_text = request.POST.get("remark", "").strip()
+
+        if new_status in dict(Complaint.STATUS_CHOICES):
+            # 🔹 Update complaint main status
+            complaint.status = new_status
+            complaint.save()
+
+            # 🔹 Save history entry in ComplaintUpdate
+            ComplaintUpdate.objects.create(
+                complaint=complaint,
+                by_user=request.user,
+                remark=remark_text if remark_text else f"Status changed to {new_status}",
+                status_snapshot=new_status
+            )
+
+            messages.success(request, "Status and remark updated successfully!")
+
     return redirect("assigned_complaints")
+
 
 
 def employee_login(request):

@@ -21,10 +21,11 @@
         {% else %}
           <a class="btn btn-sm btn-outline-secondary" href="{% url 'add_remark' c.pk %}">Add Remark</a>
           <form method="post" action="{% url 'update_status' c.pk %}" class="d-inline">{% csrf_token %}
-            <select name="status" class="form-select form-select-sm d-inline w-auto">
-              <option value="PENDING">Pending</option>
-              <option value="CLOSED">Closed</option>
-              <option value="NOT_CLOSED">Not Closed</option>
+            <input type="text" name="remark" placeholder="Add Remark">
+            <select name="status">
+            <option value="Pending" {% if c.status == "Pending" %}selected{% endif %}>Pending</option>
+            <option value="Closed" {% if c.status == "Closed" %}selected{% endif %}>Closed</option>
+            <option value="Not Closed" {% if c.status == "Not Closed" %}selected{% endif %}>Not Closed</option>
             </select>
             <button class="btn btn-sm btn-success">Update</button>
           </form>
